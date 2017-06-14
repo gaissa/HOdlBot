@@ -7,7 +7,6 @@ Version: 2017-06-14
 gaissa <https://github.com/gaissa>
 """
 
-from threading import Thread
 import json
 import os
 import random
@@ -16,11 +15,24 @@ import sys
 import time
 import urllib2
 
-threads = []
+class InterestRate():
+	"""
+	A class for showing the current interest rate.
+	"""
+
+	def __init__(self):
+		"""
+		Init.
+		"""
+
+		self.main()	
+	
+	def main(self):
+		print int(time.time() * 1000)
 
 class CoinMarketCap():
 	"""
-	A Class for fetching the data from CoinMarketCap API.
+	A class for fetching the data from CoinMarketCap API.
 	"""
 
 	def __init__(self, chan, data, irc):
