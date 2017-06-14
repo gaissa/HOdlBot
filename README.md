@@ -1,4 +1,4 @@
 # HOdlBot
 
-* [Website](https://gaissa.github.com/HOdlbot/)
-* [Documentation](https://gaissa.github.com/HOdlbot/hodlbot.html)
+* [Website](https://gaissa.github.com/HOdlbot/docs/)
+* [Documentation](https://gaissa.github.com/HOdlbot/docs/hodlbot.html)
