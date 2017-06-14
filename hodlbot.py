@@ -79,10 +79,10 @@ def main():
 		reconnect()
 		quitbot()
 
-def send1(msg):
+def send_msg(msg):
 	"""
-	Helper for sending.
-	:param string: any string
+	Helper for sending to IRC.
+	:param msg: any string
 	"""
 	irc.send('PRIVMSG ' + chan + ' :' + str(msg) + '\r\n')
 
@@ -99,7 +99,7 @@ def join():
 	"""
 	if data.find('JOIN') != -1:
 		time.sleep(1)
-		send1('Hello!')
+		send_msg('Hello!')
 
 def reconnect():
 	"""
