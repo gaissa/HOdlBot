@@ -14,15 +14,78 @@ import random
 import socket
 import sys
 import time
+import urllib2
 
 threads = []
+
+class CoinMarketCap():
+	"""
+	A Class for fetching the data from CoinMarketCap API.
+	"""
+
+	def __init__(self, chan, data, irc):
+		"""
+		Init.
+
+		:param chan: Any string, the IRC channel.
+		:param data: COMMENT.
+		:param irc : COMMENT.
+		"""
+
+		self.chan = chan
+		self.data = data
+		self.irc = irc
+		self.main()
+
+	def main(self):
+		"""
+		COMMENT.
+		"""
+
+		if self.data.find('PRIVMSG ' + self.chan + ' :!cap') != -1:
+			
+			temp = self.data.split(':!cap')
+			cointemp = temp[1].strip()
+
+			print cointemp			
+			self.fetch(cointemp)
+
+	def fetch(self, cointemp):
+		"""
+		COMMENT.
+		
+		:param cointemp: The coin input from the user.
+		"""
+
+		base = 'https://api.coinmarketcap.com/v1/ticker/'
+		coin = cointemp
+		convert = '/?convert=EUR'		
+		url = base + coin + convert
+		f = urllib2.urlopen(url)
+		json_string = f.read()
+		parsed_json = json.loads(json_string)
+		self.irc.send('PRIVMSG ' + self.chan + ' :' + \
+						parsed_json[0]['name'] + \
+						' | ' + \
+						'RANK: ' + parsed_json[0]['rank'] + \
+						' | ' + \
+						'BTC: ' + parsed_json[0]['price_btc'] + \
+						' | ' + \
+						'EUR: ' + parsed_json[0]['price_eur'] + \
+						' | ' + '1h: ' + \
+						parsed_json[0]['percent_change_1h'] + '%' + \
+						' | ' + '24h: ' + \
+						parsed_json[0]['percent_change_24h'] + '%' + \
+						' | ' + '7d: ' + \
+						parsed_json[0]['percent_change_7d'] + '%' + \
+						'\r\n')
 
 class HOdlBot():
 	"""
 	HOdlBot main class.
 	"""
 
-	# set irc connection via socket
+	# set IRC connection via socket
 	irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 	def main(self):
@@ -31,14 +94,11 @@ class HOdlBot():
 		and fire up the other functions as well.
 		"""
 
-		# set and print bot title
 		title = 'HOdlBot'
 		print '\n\n' + title
 		print '=' * len(title), '\n'
-
-		# make default port (6667)
 		network = raw_input(':SET NETWORK = ')
-		port = input(':SET PORT = ')
+		port = input(':SET PORT = ') # make default port (6667)!
 		print
 		chan = raw_input(':SET CHANNEL = ')
 
@@ -63,9 +123,8 @@ class HOdlBot():
 		self.irc.send('NICK ' + bot_nick + '\r\n')
 		self.irc.send('USER ' + bot_names + '\r\n')
 
-		# join the channel and say hello
+		# join the channel
 		self.irc.send('JOIN ' + chan + '\r\n')
-		self.hello('PRIVMSG ', chan, './dict/greet')
 
 		# while true, run the bot
 		while True:
@@ -73,19 +132,22 @@ class HOdlBot():
 			print data
 
 			self.connection(data)
-
 			self.join(chan, data)
 			self.reconnect(chan, data)
 			self.quitbot(chan, data)
+
+			# fetch the data from CoinMarketCap
+			CoinMarketCap(chan, data, self.irc)
 
 	def hello(self, action, chan, msgpath):
 		"""
 		Say the greeting message.
 
 		:param action : Action to send to IRC.
-		:param chan   : Any string, the IRC channel
+		:param chan   : Any string, the IRC channel.
 		:param msgpath: The path to the message file.
 		"""
+
 		with open (msgpath, 'r') as w:
 			wordlist = w.readlines()
 		hello = random.choice(wordlist)
@@ -96,9 +158,10 @@ class HOdlBot():
 		"""
 		Say hello when someone joins the channel.
 
-		:param chan: any string, the IRC channel
-		:param data: COMMENT
+		:param chan: any string, the IRC channel.
+		:param data: COMMENT.
 		"""
+
 		if data.find('JOIN') != -1:
 			time.sleep(1)
 			self.hello('PRIVMSG ', chan, './dict/greet')
@@ -107,8 +170,9 @@ class HOdlBot():
 		"""
 		Keep the connection alive.
 
-		:param data: COMMENT
+		:param data: COMMENT.
 		"""
+
 		if data.find('PING') != -1:
 			self.irc.send('PONG ' + data.split() [1] + '\r\n')
 
@@ -116,9 +180,10 @@ class HOdlBot():
 		"""
 		Reconnect the bot if kicked.
 
-		:param chan: any string, the IRC channel
-		:param data: COMMENT
+		:param chan: any string, the IRC channel.
+		:param data: COMMENT.
 		"""
+
 		if data.find('KICK') != -1:
 			self.irc.send('JOIN ' + chan + '\r\n')
 
@@ -126,12 +191,11 @@ class HOdlBot():
 		"""
 		Quit the bot.
 
-		:param chan: any string, the IRC channel
+		:param chan: any string, the IRC channel.
 		:param data: COMMENT
 		"""
-		if data.find('PRIVMSG ' + chan + ' :!bot quit') != -1:
 
-			# say quit message
+		if data.find('PRIVMSG ' + chan + ' :!bot quit') != -1:
 			path = './dict/quit'
 			self.hello('QUIT :', chan, path)
 			print '\n:DISCONNECTING\n\n'
