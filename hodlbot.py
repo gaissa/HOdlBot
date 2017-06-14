@@ -4,7 +4,7 @@
 """
 	HOdlBot
 	Version: 2017-06-14
-	2017 - gaissa <https://github.com/gaissa>
+	gaissa <https://github.com/gaissa>
 """
 
 from threading import Thread
@@ -15,114 +15,129 @@ import socket
 import sys
 import time
 
-chan = ''
-data = ''
-irc = ''
 threads = []
 
-def main():
+class HOdlBot():
 	"""
-	Run the bot and handle the other functions as well.
+	HOdlBot main class.
 	"""
 
-	# set and print bot title
-	title = 'HOdlBot'
-	print '\n\n' + title
-	print '=' * len(title), '\n'
-
-	# set connection
+	# set irc connection via socket
 	irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-	# make default port (6667)
-	network = raw_input(':SET NETWORK = ')
-	port = input(':SET PORT = ')
-	print
-	chan = raw_input(':SET CHANNEL = ')
+	def main(self):
+		"""
+		Get the user inputs, run the bot
+		and fire up the other functions as well.
+		"""
 
-	# bot setup
-	admins = ''
-	bot_nick = 'HOdlBot'
-	bot_names = 'HOdlBot HOdlBot HOdlBot :HOdlBot'
+		# set and print bot title
+		title = 'HOdlBot'
+		print '\n\n' + title
+		print '=' * len(title), '\n'
 
-	# connect
-	try:
-		print '\n:CONNECTING = ' + network, port, chan + '\n'
-		irc.connect((network, port))
-	except:
-		print ':NETWORK ERROR', '\n'
-		sys.exit(0)
+		# make default port (6667)
+		network = raw_input(':SET NETWORK = ')
+		port = input(':SET PORT = ')
+		print
+		chan = raw_input(':SET CHANNEL = ')
 
-	# default output encoding
-	reload(sys)
-	sys.setdefaultencoding('utf-8')
+		# bot setup
+		admins = ''
+		bot_nick = 'HOdlBot'
+		bot_names = 'HOdlBot HOdlBot HOdlBot :HOdlBot'
 
-	# set (send) names for the bot
-	irc.send('NICK ' + bot_nick + '\r\n')
-	irc.send('USER ' + bot_names + '\r\n')
+		# connect
+		try:
+			print '\n:CONNECTING = ' + network, port, chan + '\n'
+			self.irc.connect((network, port))
+		except:
+			print ':NETWORK ERROR', '\n'
+			sys.exit(0)
 
-	# join the channel
-	irc.send('JOIN ' + chan + '\r\n')
+		# default output encoding
+		reload(sys)
+		sys.setdefaultencoding('utf-8')
 
-	# say hello message
-	with open ('./dict/greet', 'r') as w:
-		wordlist = w.readlines()
-	hello = random.choice(wordlist)
-	time.sleep(1)
-	irc.send('PRIVMSG ' + chan + ' :' + hello + '\r\n')
+		# set (send) names for the bot
+		self.irc.send('NICK ' + bot_nick + '\r\n')
+		self.irc.send('USER ' + bot_names + '\r\n')
 
-	# while true, run the bot
-	while True:
-		data = irc.recv(4096)
-		print data
-		connection()
-		join()
-		reconnect()
-		quitbot()
+		# join the channel and say hello
+		self.irc.send('JOIN ' + chan + '\r\n')
+		self.hello('PRIVMSG ', chan, './dict/greet')
 
-def send_msg(msg):
-	"""
-	Helper for sending to IRC.
-	:param msg: any string
-	"""
-	irc.send('PRIVMSG ' + chan + ' :' + str(msg) + '\r\n')
+		# while true, run the bot
+		while True:
+			data = self.irc.recv(4096)
+			print data
 
-def connection():
-	"""
-	Keep the connection alive.
-	"""
-	if data.find('PING') != -1:
-		irc.send('PONG ' + data.split() [1] + '\r\n')
+			self.connection(data)
 
-def join():
-	"""
-	Say hello when joining or when someone joins the channel.
-	"""
-	if data.find('JOIN') != -1:
-		time.sleep(1)
-		send_msg('Hello!')
+			self.join(chan, data)
+			self.reconnect(chan, data)
+			self.quitbot(chan, data)
 
-def reconnect():
-	"""
-	Reconnect the bot if kicked.
-	"""
-	if data.find('KICK') != -1:
-		irc.send('JOIN ' + chan + '\r\n')
+	def hello(self, action, chan, msgpath):
+		"""
+		Say the greeting message.
 
-def quitbot():
-	"""
-	Quit the bot.
-	"""
-	if data.find(' PRIVMSG ' + chan + ' :!bot quit') != -1:
-
-		# say hello message
-		with open ('./dict/quit', 'r') as w:
+		:param action : Action to send to IRC.
+		:param chan   : Any string, the IRC channel
+		:param msgpath: The path to the message file.
+		"""
+		with open (msgpath, 'r') as w:
 			wordlist = w.readlines()
-			quit_message = random.choice(wordlist)
-		irc.send('QUIT :' + quit_message + '\r\n')
-		print '\n:DISCONNECTING\n\n'
+		hello = random.choice(wordlist)
 		time.sleep(1)
-		sys.exit(0)
+		self.irc.send(action + chan + ' :' + hello + '\r\n')
+
+	def join(self, chan, data):
+		"""
+		Say hello when someone joins the channel.
+
+		:param chan: any string, the IRC channel
+		:param data: COMMENT
+		"""
+		if data.find('JOIN') != -1:
+			time.sleep(1)
+			self.hello('PRIVMSG ', chan, './dict/greet')
+
+	def connection(self, data):
+		"""
+		Keep the connection alive.
+
+		:param data: COMMENT
+		"""
+		if data.find('PING') != -1:
+			self.irc.send('PONG ' + data.split() [1] + '\r\n')
+
+	def reconnect(self, chan, data):
+		"""
+		Reconnect the bot if kicked.
+
+		:param chan: any string, the IRC channel
+		:param data: COMMENT
+		"""
+		if data.find('KICK') != -1:
+			self.irc.send('JOIN ' + chan + '\r\n')
+
+	def quitbot(self, chan, data):
+		"""
+		Quit the bot.
+
+		:param chan: any string, the IRC channel
+		:param data: COMMENT
+		"""
+		if data.find('PRIVMSG ' + chan + ' :!bot quit') != -1:
+
+			# say quit message
+			path = './dict/quit'
+			self.hello('QUIT :', chan, path)
+			print '\n:DISCONNECTING\n\n'
+			time.sleep(1)
+			sys.exit(0)
 
 # run HodlBot!
 if __name__ == "__main__":
-	main()
+	HOdlBot().main()

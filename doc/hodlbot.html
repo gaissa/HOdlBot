@@ -10,9 +10,9 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hodlbot</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/gaissa/Projects/HOdlBot/hodlbot.py">/home/gaissa/Projects/HOdlBot/hodlbot.py</a></font></td></tr></table>
-    <p><tt>HOdlBot<br>
+    <p><tt><a href="#HOdlBot">HOdlBot</a><br>
 Version:&nbsp;2017-06-14<br>
-2017&nbsp;-&nbsp;gaissa&nbsp;&lt;https://github.com/gaissa&gt;</tt></p>
+gaissa&nbsp;&lt;https://github.com/gaissa&gt;</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -28,27 +28,62 @@ Version:&nbsp;2017-06-14<br>
 <a href="time.html">time</a><br>
 </td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#eeaa77">
+<tr bgcolor="#ee77aa">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
     
-<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-connection"><strong>connection</strong></a>()</dt><dd><tt>Keep&nbsp;the&nbsp;connection&nbsp;alive.</tt></dd></dl>
- <dl><dt><a name="-join"><strong>join</strong></a>()</dt><dd><tt>Say&nbsp;hello&nbsp;when&nbsp;joining&nbsp;or&nbsp;when&nbsp;someone&nbsp;joins&nbsp;the&nbsp;channel.</tt></dd></dl>
- <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Run&nbsp;the&nbsp;bot&nbsp;and&nbsp;handle&nbsp;the&nbsp;other&nbsp;functions&nbsp;as&nbsp;well.</tt></dd></dl>
- <dl><dt><a name="-quitbot"><strong>quitbot</strong></a>()</dt><dd><tt>Quit&nbsp;the&nbsp;bot.</tt></dd></dl>
- <dl><dt><a name="-reconnect"><strong>reconnect</strong></a>()</dt><dd><tt>Reconnect&nbsp;the&nbsp;bot&nbsp;if&nbsp;kicked.</tt></dd></dl>
- <dl><dt><a name="-send_msg"><strong>send_msg</strong></a>(msg)</dt><dd><tt>Helper&nbsp;for&nbsp;sending&nbsp;to&nbsp;IRC.<br>
-:param&nbsp;msg:&nbsp;any&nbsp;string</tt></dd></dl>
-</td></tr></table><p>
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="hodlbot.html#HOdlBot">HOdlBot</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HOdlBot">class <strong>HOdlBot</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HOdlBot">HOdlBot</a>&nbsp;main&nbsp;class.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="HOdlBot-connection"><strong>connection</strong></a>(self, data)</dt><dd><tt>Keep&nbsp;the&nbsp;connection&nbsp;alive.<br>
+&nbsp;<br>
+:param&nbsp;data:&nbsp;COMMENT</tt></dd></dl>
+
+<dl><dt><a name="HOdlBot-hello"><strong>hello</strong></a>(self, action, chan, msgpath)</dt><dd><tt>Say&nbsp;the&nbsp;greeting&nbsp;message.<br>
+&nbsp;<br>
+:param&nbsp;action&nbsp;:&nbsp;Action&nbsp;to&nbsp;send&nbsp;to&nbsp;IRC.<br>
+:param&nbsp;chan&nbsp;&nbsp;&nbsp;:&nbsp;Any&nbsp;string,&nbsp;the&nbsp;IRC&nbsp;channel<br>
+:param&nbsp;msgpath:&nbsp;The&nbsp;path&nbsp;to&nbsp;the&nbsp;message&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="HOdlBot-join"><strong>join</strong></a>(self, chan, data)</dt><dd><tt>Say&nbsp;hello&nbsp;when&nbsp;someone&nbsp;joins&nbsp;the&nbsp;channel.<br>
+&nbsp;<br>
+:param&nbsp;chan:&nbsp;any&nbsp;string,&nbsp;the&nbsp;IRC&nbsp;channel<br>
+:param&nbsp;data:&nbsp;COMMENT</tt></dd></dl>
+
+<dl><dt><a name="HOdlBot-main"><strong>main</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;user&nbsp;inputs,&nbsp;run&nbsp;the&nbsp;bot<br>
+and&nbsp;fire&nbsp;up&nbsp;the&nbsp;other&nbsp;functions&nbsp;as&nbsp;well.</tt></dd></dl>
+
+<dl><dt><a name="HOdlBot-quitbot"><strong>quitbot</strong></a>(self, chan, data)</dt><dd><tt>Quit&nbsp;the&nbsp;bot.<br>
+&nbsp;<br>
+:param&nbsp;chan:&nbsp;any&nbsp;string,&nbsp;the&nbsp;IRC&nbsp;channel<br>
+:param&nbsp;data:&nbsp;COMMENT</tt></dd></dl>
+
+<dl><dt><a name="HOdlBot-reconnect"><strong>reconnect</strong></a>(self, chan, data)</dt><dd><tt>Reconnect&nbsp;the&nbsp;bot&nbsp;if&nbsp;kicked.<br>
+&nbsp;<br>
+:param&nbsp;chan:&nbsp;any&nbsp;string,&nbsp;the&nbsp;IRC&nbsp;channel<br>
+:param&nbsp;data:&nbsp;COMMENT</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>irc</strong> = &lt;socket._socketobject object&gt;</dl>
+
+</td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>chan</strong> = ''<br>
-<strong>data</strong> = ''<br>
-<strong>irc</strong> = ''<br>
-<strong>threads</strong> = []</td></tr></table>
+<td width="100%"><strong>threads</strong> = []</td></tr></table>
 </body></html>
