@@ -8,6 +8,7 @@ gaissa <https://github.com/gaissa>
 """
 
 import json
+import math
 import os
 import random
 import socket
@@ -20,15 +21,44 @@ class InterestRate():
 	A class for showing the current interest rate.
 	"""
 
-	def __init__(self):
+	def __init__(self, chan, data, irc):
 		"""
 		Init.
 		"""
 
-		self.main()	
-	
+		self.chan = chan
+		self.data = data
+		self.irc = irc
+		self.main()
+
 	def main(self):
-		print int(time.time() * 1000)
+		"""
+		COMMENT.
+		"""
+
+		if self.data.find('PRIVMSG ' + self.chan + ' :!rate') != -1:
+			self.rate()
+
+	def rate(self):
+		"""
+		COMMENT.
+		"""
+
+		maxbonusrate = (math.pow((1+(1/math.pow(2,16))),(561*365))-1)*100
+		standardrate = (math.pow((1+(1/math.pow(2,22))),(561*365))-1)*100
+
+		millis = time.time() * 1000.00
+		totalseconds = millis / 1000.00 - 1495733454.00
+
+		totalblocks = totalseconds / 154 + 255814
+
+		temp = 409530.00 - totalblocks
+		temp2 = temp / 409530.00
+		currentbonus = math.pow(temp2, 4)
+
+		currentbonus = maxbonusrate * currentbonus
+		self.irc.send('PRIVMSG ' + self.chan + ' :' + \
+						str(currentbonus) + '%' + '\r\n')
 
 class CoinMarketCap():
 	"""
@@ -55,23 +85,23 @@ class CoinMarketCap():
 		"""
 
 		if self.data.find('PRIVMSG ' + self.chan + ' :!cap') != -1:
-			
+
 			temp = self.data.split(':!cap')
 			cointemp = temp[1].strip()
 
-			print cointemp			
+			print cointemp
 			self.fetch(cointemp)
 
 	def fetch(self, cointemp):
 		"""
 		COMMENT.
-		
+
 		:param cointemp: The coin input from the user.
 		"""
 
 		base = 'https://api.coinmarketcap.com/v1/ticker/'
 		coin = cointemp
-		convert = '/?convert=EUR'		
+		convert = '/?convert=EUR'
 		url = base + coin + convert
 		f = urllib2.urlopen(url)
 		json_string = f.read()
@@ -106,6 +136,7 @@ class HOdlBot():
 		and fire up the other functions as well.
 		"""
 
+		# set pot title and get the user inputs
 		title = 'HOdlBot'
 		print '\n\n' + title
 		print '=' * len(title), '\n'
@@ -115,7 +146,7 @@ class HOdlBot():
 		chan = raw_input(':SET CHANNEL = ')
 
 		# bot setup
-		admins = ''
+		admins = 'adminsname!~adminsnam@example.fi'
 		bot_nick = 'HOdlBot'
 		bot_names = 'HOdlBot HOdlBot HOdlBot :HOdlBot'
 
@@ -146,10 +177,9 @@ class HOdlBot():
 			self.connection(data)
 			self.join(chan, data)
 			self.reconnect(chan, data)
-			self.quitbot(chan, data)
-
-			# fetch the data from CoinMarketCap
+			self.quitbot(chan, data, admins)
 			CoinMarketCap(chan, data, self.irc)
+			InterestRate(chan, data, self.irc)
 
 	def hello(self, action, chan, msgpath):
 		"""
@@ -199,7 +229,7 @@ class HOdlBot():
 		if data.find('KICK') != -1:
 			self.irc.send('JOIN ' + chan + '\r\n')
 
-	def quitbot(self, chan, data):
+	def quitbot(self, chan, data, admins):
 		"""
 		Quit the bot.
 
@@ -207,7 +237,7 @@ class HOdlBot():
 		:param data: COMMENT
 		"""
 
-		if data.find('PRIVMSG ' + chan + ' :!bot quit') != -1:
+		if data.find(admins + ' PRIVMSG ' + chan + ' :!bot quit') != -1:
 			path = './dict/quit'
 			self.hello('QUIT :', chan, path)
 			print '\n:DISCONNECTING\n\n'
