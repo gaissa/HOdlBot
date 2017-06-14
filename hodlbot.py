@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-	HOdlBot
-	Version: 2017-06-14
-	gaissa <https://github.com/gaissa>
+HOdlBot
+Version: 2017-06-14
+gaissa <https://github.com/gaissa>
 """
 
 from threading import Thread
