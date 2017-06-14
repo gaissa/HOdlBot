@@ -22,8 +22,8 @@ threads = []
 
 def main():
 	"""
-    Run the bot and handle the other functions as well.
-    """
+	Run the bot and handle the other functions as well.
+	"""
 
 	# set and print bot title
 	title = 'HOdlBot'
@@ -41,7 +41,6 @@ def main():
 
 	# bot setup
 	admins = ''
-	#admins = 'nick!~nick@xxx.fi'
 	bot_nick = 'HOdlBot'
 	bot_names = 'HOdlBot HOdlBot HOdlBot :HOdlBot'
 
@@ -67,7 +66,6 @@ def main():
 	# say hello message
 	with open ('./dict/greet', 'r') as w:
 		wordlist = w.readlines()
-
 	hello = random.choice(wordlist)
 	time.sleep(1)
 	irc.send('PRIVMSG ' + chan + ' :' + hello + '\r\n')
@@ -86,9 +84,7 @@ def send1(msg):
 	Helper for sending.
 	:param string: any string
 	"""
-
 	irc.send('PRIVMSG ' + chan + ' :' + str(msg) + '\r\n')
-	#print (':' + chan + ' :' + str(msg) + '\r\n')
 
 def connection():
 	"""
@@ -98,10 +94,9 @@ def connection():
 		irc.send('PONG ' + data.split() [1] + '\r\n')
 
 def join():
-	"""	
+	"""
 	Say hello when joining or when someone joins the channel.
 	"""
-
 	if data.find('JOIN') != -1:
 		time.sleep(1)
 		send1('Hello!')
@@ -110,7 +105,6 @@ def reconnect():
 	"""
 	Reconnect the bot if kicked.
 	"""
-
 	if data.find('KICK') != -1:
 		irc.send('JOIN ' + chan + '\r\n')
 
@@ -118,14 +112,12 @@ def quitbot():
 	"""
 	Quit the bot.
 	"""
-
 	if data.find(' PRIVMSG ' + chan + ' :!bot quit') != -1:
-		
+
 		# say hello message
 		with open ('./dict/quit', 'r') as w:
 			wordlist = w.readlines()
 			quit_message = random.choice(wordlist)
-
 		irc.send('QUIT :' + quit_message + '\r\n')
 		print '\n:DISCONNECTING\n\n'
 		time.sleep(1)
