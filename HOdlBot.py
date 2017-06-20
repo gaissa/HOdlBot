@@ -103,24 +103,31 @@ class CoinMarketCap():
 		coin = cointemp
 		convert = '/?convert=EUR'
 		url = base + coin + convert
-		f = urllib2.urlopen(url)
-		json_string = f.read()
-		parsed_json = json.loads(json_string)
-		self.irc.send('PRIVMSG ' + self.chan + ' :' + \
-						parsed_json[0]['name'] + \
-						' | ' + \
-						'RANK: ' + parsed_json[0]['rank'] + \
-						' | ' + \
-						'BTC: ' + parsed_json[0]['price_btc'] + \
-						' | ' + \
-						'EUR: ' + parsed_json[0]['price_eur'] + \
-						' | ' + '1h: ' + \
-						parsed_json[0]['percent_change_1h'] + '%' + \
-						' | ' + '24h: ' + \
-						parsed_json[0]['percent_change_24h'] + '%' + \
-						' | ' + '7d: ' + \
-						parsed_json[0]['percent_change_7d'] + '%' + \
-						'\r\n')
+		
+		try:
+			f = urllib2.urlopen(url)
+			json_string = f.read()
+			parsed_json = json.loads(json_string)
+			self.irc.send('PRIVMSG ' + self.chan + ' :' + \
+							parsed_json[0]['name'] + \
+							' | ' + \
+							'RANK: ' + parsed_json[0]['rank'] + \
+							' | ' + \
+							'BTC: ' + parsed_json[0]['price_btc'] + \
+							' | ' + \
+							'EUR: ' + parsed_json[0]['price_eur'] + \
+							' | ' + '1h: ' + \
+							parsed_json[0]['percent_change_1h'] + '%' + \
+							' | ' + '24h: ' + \
+							parsed_json[0]['percent_change_24h'] + '%' + \
+							' | ' + '7d: ' + \
+							parsed_json[0]['percent_change_7d'] + '%' + \
+							'\r\n')
+
+		except urllib2.URLError, e:
+			self.irc.send('PRIVMSG ' + self.chan + ' :' + 'INCORRECT COIN!' +'\r\n')
+			print e.code
+			print e.read()
 
 class HOdlBot():
 	"""
